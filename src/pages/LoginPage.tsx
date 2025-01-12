@@ -1,82 +1,127 @@
-import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useLoginMutation } from "../redux/features/auth/authApi";
+import { setUser, TUser } from "../redux/features/auth/authSlice";
+import { useAppDispatch } from "../redux/hooks";
+import { verifyToken } from "../utils/verifyToken";
 
-type LoginFormInputs = {
-  email: string;
-  password: string;
-};
+const LoginPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [login] = useLoginMutation();
 
-const LoginPage: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormInputs>();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
-    console.log("Login Data:", data);
+  const onSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const toastId = toast.loading("Logging in...");
+    try {
+      const res = await login({ email, password }).unwrap();
+      const user = verifyToken(res.data.accessToken) as TUser;
+      dispatch(setUser({ user: user, token: res.data.accessToken }));
+      // navigate(`/${user.role}/dashboard`);
+      navigate(`/`);
+      toast.success("Logged in successfully", { id: toastId, duration: 2000 });
+    } catch (error) {
+      toast.error(
+        "Login failed. Please check your credentials and try again.",
+        { id: toastId }
+      );
+    }
+  };
+
+  const navigateToRegister = () => {
+    navigate("/signup");
+  };
+
+  const handlePresetLogin = (role: "admin" | "user") => {
+    const credentials = {
+      admin: { email: "admin123@gmail.com", password: "123456" },
+      user: { email: "reshad@gmail.com", password: "123456" },
+    }[role];
+
+    setEmail(credentials.email);
+    setPassword(credentials.password);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm"
-      >
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="bg-white shadow-lg rounded-lg w-full max-w-md p-8 sm:p-10">
+        <h1 className="text-3xl font-bold text-gray-800 text-center mb-6">
+          Welcome Back
+        </h1>
 
-        {/* Email Field */}
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
+        <div className="flex justify-center space-x-4 mb-6">
+          <button
+            onClick={() => handlePresetLogin("admin")}
+            className="px-4 py-2 bg-purple-700 text-white font-medium rounded-lg hover:bg-purple-800 transition"
           >
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            {...register("email", { required: "Email is required" })}
-            className={`mt-1 p-2 w-full border rounded ${
-              errors.email ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-          )}
+            Admin Login
+          </button>
+          <button
+            onClick={() => handlePresetLogin("user")}
+            className="px-4 py-2 bg-blue-700 text-white font-medium rounded-lg hover:bg-blue-800 transition"
+          >
+            User Login
+          </button>
         </div>
 
-        {/* Password Field */}
-        <div className="mb-4">
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            {...register("password", { required: "Password is required" })}
-            className={`mt-1 p-2 w-full border rounded ${
-              errors.password ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
+        <form onSubmit={onSubmit} className="space-y-6">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email Address
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
+            />
+          </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300"
-        >
-          Login
-        </button>
-      </form>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition duration-300"
+          >
+            Login
+          </button>
+        </form>
+
+        <p className="text-center mt-6 text-sm text-gray-600">
+          Don't have an account?{" "}
+          <button
+            onClick={navigateToRegister}
+            className="font-medium text-indigo-600 hover:text-indigo-800"
+          >
+            Register here
+          </button>
+        </p>
+      </div>
     </div>
   );
 };

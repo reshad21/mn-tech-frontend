@@ -1,20 +1,21 @@
-import { useState } from "react";
 import { Link } from "react-router";
+import { logOut } from "../../redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 const Navber = () => {
-  const [user, setUser] = useState(false);
-  const role = "admin";
+  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
   return (
     <>
       <div className="navbar bg-base-100 px-0">
         <div className="flex-1">
-          <a className="" href="/" onClick={() => setUser(!user)}>
+          <a className="" href="/">
             Payguard
           </a>
         </div>
         <div className="flex-none">
           <ul className="menu menu-horizontal px-1">
-            {user ? (
+            {!user ? (
               <>
                 <li>
                   <Link to="/login">Login</Link>
@@ -26,7 +27,10 @@ const Navber = () => {
             ) : (
               <>
                 <li>
-                  <Link to={`/dashboard/${role}`}>Dashboard</Link>
+                  <Link to={`/dashboard/${user?.role}`}>Dashboard</Link>
+                </li>
+                <li>
+                  <button onClick={() => dispatch(logOut())}>Logout</button>
                 </li>
               </>
             )}
