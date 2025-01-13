@@ -9,8 +9,8 @@ const Navber = () => {
     <>
       <div className="navbar bg-base-100 px-0">
         <div className="flex-1">
-          <a className="" href="/">
-            Payguard
+          <a className="text-2xl font-bold" href="/">
+            PAYGUARD
           </a>
         </div>
         <div className="flex-none">
@@ -18,19 +18,39 @@ const Navber = () => {
             {!user ? (
               <>
                 <li>
-                  <Link to="/login">Login</Link>
+                  <Link
+                    to="/login"
+                    className="bg-slate-800 text-white px-4 py-1 rounded-lg mr-2 flex justify-center items-center font-semibold"
+                  >
+                    Login
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/signup">Signup</Link>
+                  <Link
+                    to="/signup"
+                    className="bg-slate-800 text-white px-4 py-1 rounded-lg mr-2 flex justify-center items-center font-semibold"
+                  >
+                    Signup
+                  </Link>
                 </li>
               </>
             ) : (
               <>
                 <li>
-                  <Link to={`/dashboard/${user?.role}`}>Dashboard</Link>
+                  <Link
+                    to={`/dashboard/${user?.role}`}
+                    className="bg-slate-800 text-white px-4 py-1 rounded-lg mr-2 flex justify-center items-center font-semibold"
+                  >
+                    Dashboard
+                  </Link>
                 </li>
                 <li>
-                  <button onClick={() => dispatch(logOut())}>Logout</button>
+                  <button
+                    onClick={() => dispatch(logOut())}
+                    className="bg-slate-800 text-white px-4 py-1 rounded-lg mr-2 flex justify-center items-center font-semibold"
+                  >
+                    Logout
+                  </button>
                 </li>
               </>
             )}

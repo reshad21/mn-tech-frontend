@@ -1,24 +1,20 @@
+import PaymentForm from "../components/PaymentForm";
 import PaymentRequestsComponent from "../components/PaymentRequestsComponent";
 
 export const adminPaths = [
   {
     index: true,
-    label: "Overview",
-    element: <p>Overview chart</p>,
+    // label: "Overview",
+    element: <PaymentRequestsComponent />,
   },
   {
-    path: "allusers", // Relative path
+    path: "allusers",
     label: "All Users",
     element: <PaymentRequestsComponent />,
   },
   {
-    path: "profile", // Relative path
-    label: "Profile",
-    element: <p>Admin dashboard component</p>,
-  },
-  {
-    path: "setting", // Relative path
-    label: "Settings",
-    element: <p>Admin dashboard component</p>,
+    path: "my-donation", // Relative path
+    label: "My Donation",
+    element: <PaymentForm />,
   },
 ];

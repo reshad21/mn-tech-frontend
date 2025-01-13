@@ -47,50 +47,61 @@ const PaymentForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Controller
-        name="title"
-        control={control}
-        rules={{ required: "Payment title is required" }}
-        render={({ field, fieldState }) => (
-          <div>
-            <input
-              {...field}
-              type="text"
-              placeholder="Payment Title"
-              className="border p-2 w-full"
-            />
-            {fieldState.error && (
-              <p className="text-red-500">{fieldState.error.message}</p>
-            )}
-          </div>
-        )}
-      />
-      <Controller
-        name="amount"
-        control={control}
-        rules={{
-          required: "Amount is required",
-          min: { value: 1, message: "Amount must be greater than 0" },
-        }}
-        render={({ field, fieldState }) => (
-          <div>
-            <input
-              {...field}
-              type="number"
-              placeholder="Amount"
-              className="border p-2 w-full"
-            />
-            {fieldState.error && (
-              <p className="text-red-500">{fieldState.error.message}</p>
-            )}
-          </div>
-        )}
-      />
-      <Button type="primary" htmlType="submit">
-        Payment Request
-      </Button>
-    </form>
+    <>
+      <h2 className="text-center text-4xl text-slate-800 font-semibold">
+        Donation Request Form
+      </h2>
+
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 w-3/4 mx-auto"
+      >
+        <Controller
+          name="title"
+          control={control}
+          rules={{ required: "Payment title is required" }}
+          render={({ field, fieldState }) => (
+            <div>
+              <label className="font-semibold">Title</label>
+              <input
+                {...field}
+                type="text"
+                placeholder="Payment Title"
+                className="border-2 p-2 w-full border-slate-500 rounded-md"
+              />
+              {fieldState.error && (
+                <p className="text-red-500">{fieldState.error.message}</p>
+              )}
+            </div>
+          )}
+        />
+        <Controller
+          name="amount"
+          control={control}
+          rules={{
+            required: "Amount is required",
+            min: { value: 1, message: "Amount must be greater than 0" },
+          }}
+          render={({ field, fieldState }) => (
+            <div>
+              <label className="font-semibold">Amount</label>
+              <input
+                {...field}
+                type="number"
+                placeholder="Amount"
+                className="border-2 p-2 w-full border-slate-500 rounded-md"
+              />
+              {fieldState.error && (
+                <p className="text-red-500">{fieldState.error.message}</p>
+              )}
+            </div>
+          )}
+        />
+        <Button type="primary" htmlType="submit">
+          Payment Request
+        </Button>
+      </form>
+    </>
   );
 };
 

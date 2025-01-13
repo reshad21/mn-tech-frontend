@@ -1,17 +1,20 @@
+import PaymentForm from "../components/PaymentForm";
+import PaymentList from "../components/PaymentList";
+
 export const userPaths = [
   {
-    path: "mydonation", // Relative path
+    index: true,
+    // label: "Overview",
+    element: <PaymentForm />,
+  },
+  {
+    path: "my-donation", // Relative path
     label: "My Donation",
-    element: <p>User dashboard component</p>,
+    element: <PaymentForm />,
   },
   {
-    path: "profile", // Relative path
-    label: "Profile",
-    element: <p>User dashboard component</p>,
-  },
-  {
-    path: "setting", // Relative path
-    label: "Settings",
-    element: <p>User dashboard component</p>,
+    path: "all-payments", // Relative path
+    label: "All Payments",
+    element: <PaymentList />,
   },
 ];

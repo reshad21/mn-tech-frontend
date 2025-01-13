@@ -8,11 +8,7 @@ import { userPaths } from "../../routes/user.routes"; // Import user paths
 const { Header, Content, Sider } = Layout;
 
 // Header menu items
-const headerMenuItems: MenuProps["items"] = [
-  { key: "/", label: "Payguard" },
-  { key: "/item2", label: "Item 2" },
-  { key: "/item3", label: "Item 3" },
-];
+const headerMenuItems: MenuProps["items"] = [{ key: "/", label: "Back Home" }];
 
 const DashboardLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -22,8 +18,8 @@ const DashboardLayout: React.FC = () => {
   // Determine sidebar items based on role
   const sidebarMenuItems: MenuProps["items"] =
     role === "admin"
-      ? adminPaths.map(({ path, label }) => ({ key: path, label }))
-      : userPaths.map(({ path, label }) => ({ key: path, label }));
+      ? adminPaths.map(({ path, label }) => ({ key: path!, label }))
+      : userPaths.map(({ path, label }) => ({ key: path!, label }));
 
   const handleMenuClick = (e: { key: string }) => {
     navigate(e.key); // Navigate to the route corresponding to the key
