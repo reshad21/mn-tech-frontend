@@ -8,8 +8,8 @@ import { RootState } from "../store";
 
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api',
-    // baseUrl: 'https://bike-booking-opal.vercel.app/api',
+    // baseUrl: 'http://localhost:5000/api',
+    baseUrl: 'https://payguard-backend.vercel.app/api',
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
         const token = (getState() as RootState).auth.token;
@@ -32,7 +32,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<FetchArgs, BaseQueryApi, Definition
     if (result.error?.status == 401) {
         //*send refresh token
         console.log('sending refresh token');
-        const res = await fetch('http://localhost:5000/api/auth/refresh-token', {
+        const res = await fetch('https://payguard-backend.vercel.app/api/auth/refresh-token', {
             method: 'POST',
             credentials: 'include',
         });
@@ -59,8 +59,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<FetchArgs, BaseQueryApi, Definition
 
 export const baseApi = createApi({
     reducerPath: 'baseApi',
-    // baseQuery: fetchBaseQuery({ baseUrl: 'https://sporting-goods-db.vercel.app' }),
     baseQuery: baseQueryWithRefreshToken,
-    tagTypes: ['bikes', 'user', 'booking', 'subscriptions', 'requestpayment'],
+    tagTypes: ['user', 'requestpayment'],
     endpoints: () => ({}),
 });
