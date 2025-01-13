@@ -1,66 +1,66 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Space, Table, Tag } from "antd";
-import React, { useState } from "react";
+import React from "react";
+import { toast } from "sonner";
+import {
+  useApprovePaymentRequestMutation,
+  useGetAllPaymentRequestQuery,
+  useRejectPaymentRequestMutation,
+} from "../redux/features/paymentrequest/paymentrequestApi";
 
 interface PaymentRequest {
-  id: number;
-  userName: string;
-  paymentTitle: string;
+  _id: number; // Adjust this field if your API uses a different field name (e.g., paymentRequestId)
+  email: string;
+  title: string;
   amount: number;
   status: "Pending" | "Approved" | "Rejected";
 }
 
 const PaymentRequestsComponent: React.FC = () => {
-  // Updated dummy data with paymentTitle
-  const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([
-    {
-      id: 1,
-      userName: "John Doe",
-      paymentTitle: "Monthly Subscription",
-      amount: 100,
-      status: "Pending",
-    },
-    {
-      id: 2,
-      userName: "Jane Smith",
-      paymentTitle: "Annual Membership",
-      amount: 250,
-      status: "Approved",
-    },
-    {
-      id: 3,
-      userName: "Sam Wilson",
-      paymentTitle: "One-time Donation",
-      amount: 50,
-      status: "Pending",
-    },
-  ]);
+  // Fetch payment requests from the backend
+  const {
+    data: paymentRequests,
+    isLoading,
+    error,
+  } = useGetAllPaymentRequestQuery(undefined);
+
+  // Mutations for approve and reject
+  const [approve] = useApprovePaymentRequestMutation();
+  const [rejected] = useRejectPaymentRequestMutation();
 
   // Approve payment
   const handleApprove = (id: number) => {
-    setPaymentRequests((prev) =>
-      prev.map((req) => (req.id === id ? { ...req, status: "Approved" } : req))
-    );
+    console.log("Updating payment request status with id:", id); // Debugging log
+    if (id) {
+      approve({ id }); // Pass the correct id to the mutation
+      toast.success(`Payment request #${id} approved.`);
+    } else {
+      console.error("ID is missing");
+    }
   };
 
   // Reject payment
   const handleReject = (id: number) => {
-    setPaymentRequests((prev) =>
-      prev.map((req) => (req.id === id ? { ...req, status: "Rejected" } : req))
-    );
+    console.log("Rejecting payment request with id:", id); // Debugging log
+    if (id) {
+      rejected({ id }); // Pass the correct id to the mutation
+      toast.error(`Payment request #${id} rejected.`);
+    } else {
+      console.error("ID is missing");
+    }
   };
 
   // Table columns
   const columns = [
     {
-      title: "User Name",
-      dataIndex: "userName",
-      key: "userName",
+      title: "User Email",
+      dataIndex: "email",
+      key: "email",
     },
     {
       title: "Payment Title",
-      dataIndex: "paymentTitle",
-      key: "paymentTitle",
+      dataIndex: "title",
+      key: "title",
     },
     {
       title: "Amount ($)",
@@ -86,18 +86,10 @@ const PaymentRequestsComponent: React.FC = () => {
       key: "action",
       render: (_: any, record: PaymentRequest) => (
         <Space size="middle">
-          <Button
-            type="primary"
-            onClick={() => handleApprove(record.id)}
-            disabled={record.status !== "Pending"}
-          >
+          <Button type="primary" onClick={() => handleApprove(record._id)}>
             Approve
           </Button>
-          <Button
-            danger
-            onClick={() => handleReject(record.id)}
-            disabled={record.status !== "Pending"}
-          >
+          <Button danger onClick={() => handleReject(record._id)}>
             Reject
           </Button>
         </Space>
@@ -105,13 +97,31 @@ const PaymentRequestsComponent: React.FC = () => {
     },
   ];
 
+  // Handle error state
+  if (error) {
+    return (
+      <p className="text-red-500">
+        Failed to load payment requests. Please try again later.
+      </p>
+    );
+  }
+
   return (
     <div style={{ padding: 24 }}>
-      <h2>Payment Requests</h2>
+      <h2 className="mb-5 text-4xl font-bold text-slate-800">
+        Payment Requests List
+      </h2>
       <Table
-        dataSource={paymentRequests.map((item) => ({ ...item, key: item.id }))}
+        dataSource={
+          paymentRequests?.data.map((item: PaymentRequest) => ({
+            ...item,
+            key: item._id, // Ensure 'key' is set correctly for Ant Design table
+          })) || []
+        } // Fallback to empty array if no data
         columns={columns}
+        loading={isLoading}
         bordered
+        pagination={{ pageSize: 3, showSizeChanger: true }}
       />
     </div>
   );
