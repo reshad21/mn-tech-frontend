@@ -10,6 +10,7 @@ const paymentrequestApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: paymentrequestInfo,
             }),
+            invalidatesTags: ['requestpayment'],
         }),
 
         getAllPaymentRequest: builder.query({

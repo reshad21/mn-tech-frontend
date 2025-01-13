@@ -30,7 +30,6 @@ const PaymentRequestsComponent: React.FC = () => {
 
   // Approve payment
   const handleApprove = (id: number) => {
-    console.log("Updating payment request status with id:", id); // Debugging log
     if (id) {
       approve({ id }); // Pass the correct id to the mutation
       toast.success(`Payment request #${id} approved.`);
@@ -41,7 +40,6 @@ const PaymentRequestsComponent: React.FC = () => {
 
   // Reject payment
   const handleReject = (id: number) => {
-    console.log("Rejecting payment request with id:", id); // Debugging log
     if (id) {
       rejected({ id }); // Pass the correct id to the mutation
       toast.error(`Payment request #${id} rejected.`);
