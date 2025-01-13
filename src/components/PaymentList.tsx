@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Button } from "antd";
+import { Link } from "react-router";
 import { useGetAllPaymentRequestQuery } from "../redux/features/paymentrequest/paymentrequestApi";
 
 const PaymentList = () => {
@@ -38,7 +38,7 @@ const PaymentList = () => {
               </span>
             </p>
           </div>
-          <Button>Pay Now</Button>
+          <Link to="/checkout">Pay Now</Link>
         </div>
       ))}
     </div>
