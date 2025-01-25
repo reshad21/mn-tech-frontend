@@ -1,5 +1,4 @@
 import PaymentForm from "../components/PaymentForm";
-import PaymentList from "../components/PaymentList";
 
 export const userPaths = [
   {
@@ -11,10 +10,5 @@ export const userPaths = [
     path: "my-donation", // Relative path
     label: "My Donation",
     element: <PaymentForm />,
-  },
-  {
-    path: "all-payments", // Relative path
-    label: "All Payments",
-    element: <PaymentList />,
   },
 ];
