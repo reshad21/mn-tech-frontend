@@ -26,7 +26,7 @@ export const frontendPaths = [
     element: <LoginPage />,
   },
   {
-    path: "/checkout",
+    path: "/checkout/:productId",
     element: <CheckoutPage />,
   },
   // {

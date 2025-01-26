@@ -1,11 +1,19 @@
 import { Link } from "react-router";
 
-const ProductCard = () => {
+export type TProduct = {
+  _id: string;
+  img: string;
+  description: string;
+  name: string;
+  price: number;
+};
+
+const ProductCard = ({ product }: { product: TProduct }) => {
   return (
     <div className="card bg-white w-full shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition duration-300">
       <figure className="relative">
         <img
-          src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          src={product.img}
           alt="Shoes"
           className="w-full h-64 object-cover"
         />
@@ -14,11 +22,15 @@ const ProductCard = () => {
         </div>
       </figure>
       <div className="p-4">
-        <h2 className="text-xl font-semibold text-gray-800">Stylish Shoes</h2>
+        <h2 className="text-xl font-semibold text-gray-800">{product?.name}</h2>
+        <p className="text-gray-800">{product?.description}</p>
+
         <div className="flex items-center justify-between mt-4">
-          <span className="text-lg font-bold text-gray-800">$79.99</span>
+          <span className="text-lg font-bold text-gray-800">
+            ${product.price}
+          </span>
           <Link
-            to="/checkout"
+            to={`/checkout/${product?._id}`}
             className="text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 bg-orange-500"
           >
             Buy Now

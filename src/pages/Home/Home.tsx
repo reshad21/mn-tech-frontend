@@ -15,7 +15,7 @@ const Home = () => {
           <h1 className="text-2xl font-bold text-gray-800 mb-4">Others</h1>
           <Link
             to="/play-quize"
-            className="block bg-blue-500 text-white text-center py-3 px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+            className="block bg-purple-500 text-white text-center py-3 px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
           >
             Play Quiz
           </Link>
