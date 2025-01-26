@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 export type TProduct = {
   _id: string;
-  img: string;
+  image: string;
   description: string;
   name: string;
   price: number;
@@ -13,7 +13,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
     <div className="card bg-white w-full shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition duration-300">
       <figure className="relative">
         <img
-          src={product.img}
+          src={product?.image}
           alt="Shoes"
           className="w-full h-64 object-cover"
         />

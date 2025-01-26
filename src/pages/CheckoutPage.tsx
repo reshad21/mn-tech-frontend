@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -11,8 +12,10 @@ const CheckoutPage = () => {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm();
   const [createOrder] = useCreateOrderMutation();
+  const [finalAmount, setFinalAmount] = useState<number | null>(null);
 
   const { productId } = useParams();
   const { data: product, isLoading, error } = useGetProductByIdQuery(productId);
@@ -22,7 +25,7 @@ const CheckoutPage = () => {
   if (error) return <div>Error loading data.</div>;
   if (!product?.data) return <div>No data available.</div>;
 
-  //destructuring product
+  // Destructuring product details
   const {
     name = "",
     description = "",
@@ -30,11 +33,24 @@ const CheckoutPage = () => {
     image = "",
   } = product?.data || {};
 
+  // Watch for promo code input
+  const promoCode = watch("promoCode");
+
+  //discount for promocode
+  const calculateFinalAmount = () => {
+    let calculatedAmount = price; // Base price of the product
+    if (promoCode === "PROMO10") {
+      calculatedAmount *= 0.9; // Apply 10% discount
+    } else if (promoCode === "PROMO5") {
+      calculatedAmount *= 0.95; // Apply 5% discount
+    }
+    setFinalAmount(calculatedAmount.toFixed(2)); // Update the state
+  };
+
   const onSubmit = async (data: any) => {
     const toastId = toast.loading("Processing Order...");
     try {
-      const { fullName, address, phone, email, paymentMethod, finalAmount } =
-        data;
+      const { fullName, address, phone, email, paymentMethod } = data;
       const orderData = {
         userInfo: { fullName, address, phone, email, paymentMethod },
         finalAmount,
@@ -117,24 +133,17 @@ const CheckoutPage = () => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="email" className="block font-medium mb-2">
-              Email
+            <label htmlFor="promoCode" className="block font-medium mb-2">
+              Promo Code (Optional)
             </label>
             <input
-              type="email"
-              id="email"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
-                  message: "Invalid email address",
-                },
-              })}
+              type="text"
+              id="promoCode"
+              {...register("promoCode")}
+              onBlur={calculateFinalAmount}
+              placeholder="Enter promo code"
               className="w-full border-gray-300 rounded-lg p-2"
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm">Invalid email address</p>
-            )}
           </div>
 
           <div className="mb-4">
@@ -159,15 +168,10 @@ const CheckoutPage = () => {
             <input
               type="number"
               id="finalAmount"
-              {...register("finalAmount", {
-                required: "Amount is required",
-                min: 0,
-              })}
-              className="w-full border-gray-300 rounded-lg p-2"
+              value={finalAmount ?? price}
+              readOnly
+              className="w-full border-gray-300 rounded-lg p-2 bg-gray-100"
             />
-            {errors.finalAmount && (
-              <p className="text-red-500 text-sm">Amount is required</p>
-            )}
           </div>
 
           <button

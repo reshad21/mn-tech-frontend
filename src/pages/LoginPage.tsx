@@ -22,8 +22,8 @@ const LoginPage = () => {
       const res = await login({ email, password }).unwrap();
       const user = verifyToken(res.data.accessToken) as TUser;
       dispatch(setUser({ user: user, token: res.data.accessToken }));
-      navigate(`/dashboard/${user?.role}`);
-      // navigate(`/`);
+      // navigate(`/dashboard/${user?.role}`);
+      navigate(`/`);
       toast.success("Logged in successfully", { id: toastId, duration: 2000 });
     } catch (error) {
       toast.error(
@@ -39,8 +39,8 @@ const LoginPage = () => {
 
   const handlePresetLogin = (role: "admin" | "user") => {
     const credentials = {
-      admin: { email: "admin123@gmail.com", password: "123456" },
-      user: { email: "reshad@gmail.com", password: "123456" },
+      admin: { email: "admin@example.com", password: "password123" },
+      user: { email: "reshad@gmail.com", password: "password123" },
     }[role];
 
     setEmail(credentials.email);
